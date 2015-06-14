@@ -2,7 +2,7 @@ import numpy as np
 import pandas
 import matplotlib.pyplot as plt
 
-def entries_histogram(turnstile_weather):
+def entries_histogram(turnstile_weather, csv=False):
     '''
     Before we perform any analysis, it might be useful to take a
     look at the data we're hoping to analyze. More specifically, let's 
@@ -24,9 +24,26 @@ def entries_histogram(turnstile_weather):
     https://www.dropbox.com/s/meyki2wl9xfa7yk/turnstile_data_master_with_weather.csv
     '''
     'TIMEn', 'ENTRIESn_hourly'
+    if csv:
+        df = pandas.read_csv(turnstile_weather)
+    else:
+        df = turnstile_weather
+
+    bins = 150
+    alpha = 0.5
+    xmin = ymin = 0
+    xmax = 6000
+    ymax = 45000
+
     plt.figure()
-    rain = turnstile_weather[turnstile_weather['rain'] == 1] # your code here to plot a historgram for hourly entries when it is raining
-    no_rain = turnstile_weather[turnstile_weather['rain'] == 0]
-    rain['ENTRIESn_hourly'].plot(kind='hist', stacked=True, alpha=0.5)
-    no_rain['ENTRIESn_hourly'].plot(kind='hist', stacked=True, alpha=0.5)
+
+    df['ENTRIESn_hourly'][df['rain'] == 0].hist(bins=bins, alpha=alpha)
+    df['ENTRIESn_hourly'][df['rain'] == 1].hist(bins=bins, alpha=alpha)
+
+    plt.axis([xmin, xmax, ymin, ymax])
+    plt.suptitle('Histogram of ENTRIESn_hourly')
+    plt.xlabel('ENTRIESn_hourly')
+    plt.ylabel('Frequency')
+    plt.legend(['No rain', 'Rain'])
+
     return plt
